@@ -230,9 +230,42 @@ zrevrank zset01 v4 ->1
 ##### Hash
 - String类型的field和value的映射表
 ##### 命令
-- ``
+- `hset/hget/hmset/hmget/hgetall/hdel`
+```
+- hset user id 11
+- hget user id ->11
+- hset user name z3
+- hget user name ->z3
+- hmset customer id 11 name 1i4 age 26
+- hmget customer id name age
+- hgetall customer ->id 11 name li4 age 26
+- hdel user name ->删除user下的name键值对
+```
+- `hlen`
+```
+- hlen user ->1
+- hlen customer ->3 
+```
+- `hexists key key1`
+```
+- hexists customer email ->0
+```
+- `hkeys/hvals`
+```
+- hkeys customer ->id name age 
+- hvals customer -> 11 li4 26
+```
+- `hincrby/hincrbyfloat`
+```
+- hincrby customer age 2 ->28
+- hset customer score 91.5
+- hincrbyfloat customer score 0.5 ->92
+```
+- hsetnx
+```
+- hsetnx customer age 25 ->0 失败，1成功
+```
 
-
-
+### 配置文件
 
 
