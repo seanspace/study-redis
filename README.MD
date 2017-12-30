@@ -1,4 +1,4 @@
-
+[TOC]
 # Redis学习
 
 ## 文档
@@ -53,8 +53,62 @@
 - `mset/mget/msetnx`
 - `getset` 先get再set
 #### 2. Lists
-- List
+##### List
 - 底层是双向链表
+##### 命令
+- `lpush/rpush/lrange`
+```
+- LPUSH list01 1 2 3 4 5 -> 54321
+- RPUSH list02 1 2 3 4 5 -> 12345
+- LRANG list02 0 -1 ->12345
+```
+- `lpop/rpop` 出栈
+```
+- lpop list01 -> 5
+- lpop list02 -> 1
+- rpop list01 -> 1
+- rpop list02 -> 5
+```
+- `lindex`按照索引下标获取元素
+```
+- LINDEX list01 2 ->3
+- LINDEX list01 5 ->nil
+```
+- `len`
+```
+- LLEN list01 ->5
+```
+- `lrem key` 删N个value
+```
+- RPUSH list03 11122233344455567
+- LREM list03 2 3 ->111222344455567删除2个3
+
+```
+- `ltrim key index index`截取指定范围的值后在赋值给key
+```
+- lpush list04 12345678 ->87654321
+- ltrim list04 0 4 ->87654
+```
+- `rpoplpush 源列表 目的列表`
+```
+- rpoplpush list01 list02 ->list01:5432 list02:112345
+
+```
+- `lset key index value`指定索引设置值
+```
+- lset list01 2 x ->12x45
+```
+- `linsert key before/after val1 val2`
+```
+- linsert list01 before x java ->12javax45
+```
+##### 性能总结
+- 字符串双向链表，双向操作
+- 键不存在创建新的链表
+- 键存在新增内容
+- 如果值全部移除对应的键也就消失了
+- 链表的操作无论是头还是尾效率都很高，从中间操作效率低
+
 #### 3. Sets
 - Set
 - 无序集合
