@@ -267,5 +267,63 @@ zrevrank zset01 v4 ->1
 ```
 
 ### 配置文件
+- redis.conf在redis的安装根目录下
+- 单位大小写不敏感。1gb = 1GB = 1gB
+- INCLUDE包含多个配置文件。 `include /path/to/local.conf`
+- GENERNAL通用配置。（常用）
+```
+#默认no
+daemonize yes
+
+#pid文件路径(进程id)
+pidfile /var/run/redis.pid
+
+#port
+port 6379
+
+#tcp-backlog,是一个连接队列，总和=未完成三次握手队列+已完成三次握手队列。
+tcp-backlog 511
+
+#绑定网卡ip
+#bind 102.168.1.100 10.0.0.1
+bind 127.0.0.1
+
+#关闭空闲多少秒的连接。0表示不超时
+timeout 0
+
+#单位为秒，0不进行keepalive检测，建议设置成60
+tcp-keepalive
+
+#日志级别
+loglevel notice
+
+#日志文件
+logfile --
+
+#数据库
+databases 16
+
+```
+- SNAPSHOTTING快照
+- REPLICATION复制
+- **SECURITY安全**
+> 访问任何命令前，增加访问密码。`auth 密码`
+
+`requirepass`
+
+- **LIMITS**
+```
+Maxclients 10000
+#当最大内存值达到，会在下面5种过期策略中
+Maxmemory <bytes>
+```
+> Maxclients  Maxmemory  Maxmemory
 
 
+### Redis的持久化
+
+### Redis的事务
+
+### Redis的发布和订阅
+
+### Redis的复制
