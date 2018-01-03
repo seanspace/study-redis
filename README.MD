@@ -313,14 +313,35 @@ databases 16
 
 - **LIMITS**
 ```
+#最大的内存
 Maxclients 10000
-#当最大内存值达到，会在下面5种过期策略中
+
+
+#最大内存值
 Maxmemory <bytes>
+
+#以下5种缓存过期策略
+##MAXMEMORY POLICY
+1. volatile-lru：最近最少使用，只对设置了过期时间的键
+2. allkeys-lru：最近最少使用
+3. volatile-random：在过期集合中移除随机的key，只对设置了过期时间的键
+4. allkeys-random：移除随机的key
+5. volatile-ttl：移除哪些TTL值最小的key，就是哪些最近要过期的key
+6. noeviction:永不过期。针对写操作，只是返回错误信息
+
+#默认
+maxmemory-policy noeviction
+
+#设置样本数量，LRU算法和最小TTL算法都并非是精确的算法，而是估管值，所以你可以设置样本的大小，redis默认会检查这么多个key并选择其中LRU的那个。
+Maxmemory-samples
+
 ```
-> Maxclients  Maxmemory  Maxmemory
+
+- APPEND ONLY MODE 追加
 
 
 ### Redis的持久化
+
 
 ### Redis的事务
 
