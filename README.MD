@@ -305,6 +305,32 @@ databases 16
 
 ```
 - SNAPSHOTTING快照
+
+数据持久化
+
+```
+#save the DB on disk
+#save <seconds> <changes>
+# save **  关闭保存
+
+save 900 1 900秒内有一次变更触发保存
+save 300 10 300秒内有10次变更
+save 60 10000  60秒有10000次变更
+
+dbfilename dump.rdb
+
+##如果出错了立即停止备份
+Stop-writes-on-bgsave-error yes
+
+##是否启用压缩算法
+rdbcompression yes
+
+##存储后，使用CRC64算法来进行数据校验。增加大约10%的性能。
+rdbchecksum yes
+
+dir
+```
+
 - REPLICATION复制
 - **SECURITY安全**
 > 访问任何命令前，增加访问密码。`auth 密码`
@@ -341,6 +367,50 @@ Maxmemory-samples
 
 
 ### Redis的持久化
+#### 1. RDB(Redis DataBase)
+- 介绍
+
+在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它恢复时是将快照文件直接读到内存里。
+- 是什么
+
+Redis会单独创建（fork）一个子进程来进行持久化，会先将数据写入到一个临时文件中，待持久化过程都结束了，再用这个临时文件替换上次持久化好的文件。
+主进程不进行任何IO操作，确保了性能。如果大规模数据的恢复，且数据完整性不是非常敏感，那么RDB会比AOF高效。RDB缺点是最后一次持久化后的数据可能
+丢失。
+- Fork
+
+复制一个与当前进程一样的进程。新的进程的所有数据（变量、环境变量、程序计数器等）
+- RDB保存的是dump.rdb
+- 配置位置
+
+参考：SNIPSHOTING
+
+- 如何触发RDB快照
+
+1. 根据配置的触发策略。
+默认策略如下：
+900秒内有一次变更触发保存
+300秒内有10次变更
+60秒有10000次变更
+
+2. 修改某个值后，直接发起命令`save`立即备份。
+BGSAVE:后台异步进行快照操作。
+当执行了FLUSHALL，dump.rdb文件的内存也将被写到dump，也就是个空的rdb文件。
+- 如何恢复
+
+1. dump.rdb文件存到远程，只要拷贝到路径下，启动后就加载到了内存。
+- 优势
+
+1. 适合大规模的数据恢复
+2. 对数据的完整性和一致性要求不高
+- 劣势
+
+1. 如果意外宕机， 丢失最后一次的快照后的数据。
+2. Fork的时候，内存中数据被克隆了一份，大致2被的膨胀性需要考虑。
+- 如何停止
+动态所有停止RDB保存规则的方法：  `redis-cli config set save '''`
+
+
+#### 2. AOF(Append Only File)
 
 
 ### Redis的事务
@@ -348,3 +418,6 @@ Maxmemory-samples
 ### Redis的发布和订阅
 
 ### Redis的复制
+
+### Jedis
+
